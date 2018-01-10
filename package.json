@@ -1,0 +1,39 @@
+{
+  "name": "node-red-contrib-kgpcomposer",
+  "version": "0.1.0",
+  "description": "KashiwGeeks payload composer",
+  "main": "kgpcomposer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ty4tw/node-red-contrib-kgpcomposer.git"
+  },
+  "keywords": [
+    "node-red",
+    "KashiwaGeeks",
+    "compose",
+    "payload"
+  ],
+  "node-red": {
+    "nodes": {
+      "kgpcomposer": "kgpcomposer.js"
+    }
+  },
+  "author": {
+    "name": "ty4tw"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ty4tw/node-red-contrib-kgpcomposer/issues"
+  },
+  "homepage": "https://github.com/ty4tw/node-red-contrib-kgpcomposer#readme",
+  "readme": "# node-red-contrib-compose-kgp\ncompose KashiwaGeeks payload\n",
+  "readmeFilename": "README.md",
+  "gitHead": "2334899f65c664a66dfdbe7dc4542487df3577ba",
+  "_id": "node-red-contrib-kgpcomposer@0.1.0",
+  "_shasum": "4c836d34faf6477a8c5be47f81e3ead5a693f8d1",
+  "_from": "../workspace/git/node-red-contrib-kgpcomposer",
+  "_resolved": "file:../workspace/git/node-red-contrib-kgpcomposer"
+}

@@ -1,0 +1,145 @@
+<script type="text/x-red" data-template-name="kgpcomposer">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-empire"></i> Port</label>
+        <input type="text" id="node-input-port" placeholder="port">
+    </div>
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> rule</span></label>
+    </div>
+    <div class="form-row node-input-rule-container-row">
+        <ol id="node-input-rule-container"></ol>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('kgpcomposer', {
+        color: "#E2D96E",
+        category: 'function',
+        defaults: {
+            name: {value:""},
+			port: {value:"", required:true},
+            rules:{value:[""], required:true}     
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "join.png",
+        label: function() {
+            return this.name||"KGP composer";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+                addItem: function(container,i,opt) {
+					if (!opt.hasOwnProperty('r')) {
+                        opt.r = {};
+                    }
+                    var rule = opt.r;
+                    if (!rule.hasOwnProperty('t')) {
+                        rule.r = 'uint8';
+                    }
+                    if (!opt.hasOwnProperty('i')) {
+                        opt._i = Math.floor((0x99999-0x10000)*Math.random()).toString(16);
+                    }
+                    var row = $('<div/>').appendTo(container);
+					var selectField = $('<select/>',{style:"width:90px; margin-left: 5px; text-align: center;"}).appendTo(row);
+					var selectOptions = [
+                        {v:"true",t:"is true"},
+                        {v:"false",t:"is false"},
+                        {v:"uint4",t:"uint4_t"},
+                        {v:"uint8",t:"uint8_t"},
+                        {v:"uint16",t:"uint16_t"},
+                        {v:"uint32",t:"uint32_t"},
+                        {v:"int4",t:"int4_t"},
+                        {v:"int8",t:"int8_t"},
+                        {v:"int16",t:"int16_t"},
+                        {v:"int32",t:"int32_t"},
+                        {v:"float",t:"float"},
+                        {v:"string",t:"string"}
+                    ];
+
+                    for (var i=0; i<selectOptions.length; i++) {
+                        selectField.append($("<option></option>").val(selectOptions[i].v).text(selectOptions[i].t));
+                    }
+
+                    var valueField = $('<input/>',{class:"node-input-rule-value",type:"text",style:"margin-left: 5px;"}).appendTo(row).typedInput({default:'num',types:['num','str','bool']});
+
+                    selectField.change(function() {
+                        var type = selectField.val();
+                        if (type === "true" || type === "false" ) {
+                            valueField.typedInput('hide');
+                            valueField.typedInput('type',rule.vt||'bool');
+                        } else {
+                            valueField.typedInput('show');
+                            if (type === "string") {
+                                valueField.typedInput('type',rule.vt||'str');
+                            } else {
+                                valueField.typedInput('type',rule.vt||'num');   
+                            }
+                        }  
+                    });
+
+                    selectField.val(rule.t);
+
+                    if (typeof rule.v != "undefined") {
+                        valueField.typedInput('value',rule.v);
+                        valueField.typedInput('type',rule.vt||'num');
+                    }
+
+                    selectField.change();
+                    var newWidth = $("#node-input-rule-container").width();
+                },
+                removable: true,
+                sortable: true
+            });
+
+
+            for (var i=0; i<this.rules.length; i++) {
+                var rule = this.rules[i];
+                $("#node-input-rule-container").editableList('addItem',{r:rule,i:i});
+            }
+		},
+		
+        oneditsave: function() {
+            var rules = $("#node-input-rule-container").editableList('items');
+            var ruleset;
+            var node = this;
+            node.rules = [];
+            rules.each(function(i) {
+                var ruleData = $(this).data('data');
+                var rule = $(this);
+                var type = rule.find("select").val();
+                var r = {t:type};
+                r.v = rule.find(".node-input-rule-value").typedInput('value');
+                r.vt = rule.find(".node-input-rule-value").typedInput('type');
+
+                node.rules.push(r);
+            });
+        },
+ 
+        oneditresize: function(size) {
+            var rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
+            var height = size.height;
+            for (var i=0; i<rows.size(); i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            $("#node-input-rule-container").editableList('height',height); 
+        }
+	});
+
+</script>
+
+<script type="text/x-red" data-help-name="kgpcomposer">
+    <p>KashiwaGeeks Payload composer</p>
+	<p> Payload is a bitstream consist from 1bit-bool and 4bits, 1byte, 2bytes, 4bytes integer or unsinged integer and 4bytes float. This node compose the payload and return the port and the payload.</p>
+<h3>Details</h3>
+<p>Add a selector and select a format of Payload and enter the value.</p>
+
+
+</script>
