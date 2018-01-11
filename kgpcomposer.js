@@ -205,10 +205,8 @@ module.exports = function(RED) {
 				str += hex;
 			}	
 
-            var array = [];
-            array.push(node.portNo);
-            array.push(str);
-            msg.payload = array;
+            msg.port = node.portNo;
+            msg.payload = str;
             node.send(msg);
         });
     }
