@@ -199,7 +199,7 @@ module.exports = function(RED) {
                 node.warn(err);
             }
 	        var str = "";	
-            for ( var i = 0; i <= Bpos; i++ )
+            for ( var i = 0; i < Bpos; i++ )
 			{   
                 var hex = ('00' + (udata[i]).toString(16)).substr(-2);	
 				str += hex;
